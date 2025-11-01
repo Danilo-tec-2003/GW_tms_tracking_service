@@ -1,6 +1,7 @@
 package com.gwsistemas.tracking.service;
 
 import com.gwsistemas.tracking.dto.input.OccurrenceCreateDTO;
+import com.gwsistemas.tracking.dto.input.OrderCreateDTO;
 import com.gwsistemas.tracking.dto.output.OccurrenceDTO;
 import com.gwsistemas.tracking.dto.output.OrderDetailsDTO;
 import com.gwsistemas.tracking.enums.TrackingStatus;
@@ -146,6 +147,27 @@ public class TrackingService {
         );
 
         return dto;
+    }
+
+    /**
+     * Cria uma nova encomenda, validando se o código de rastreio já existe.
+     *
+     * @param dto O DTO de entrada com os dados da nova encomenda.
+     * @return O DTO da encomenda recém-criada.
+     * @throws BusinessRuleException se o 'trackingCode' já estiver em uso.
+     */
+    @Transactional
+    public OrderDetailsDTO createOrder(OrderCreateDTO dto) {
+        Optional<Order> existingOrderOpt = orderRepository.findByTrackingCode(dto.getTrackingCode());
+
+        if (existingOrderOpt.isPresent()) {
+            throw new BusinessRuleException("Já existe uma encomenda cadastrada com o código de rastreio: " + dto.getTrackingCode());
+        }
+
+        Order newOrder = orderMapper.toEntity(dto);
+        Order savedOrder = orderRepository.save(newOrder);
+
+        return orderMapper.toDetailsDTO(savedOrder);
     }
 
 }
