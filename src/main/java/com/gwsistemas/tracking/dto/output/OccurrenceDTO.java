@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO usado para retornar informações de uma ocorrência de encomenda.
+ * Contém o status e a data/hora da ocorrência.
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

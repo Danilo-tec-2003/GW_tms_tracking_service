@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * DTO usado para retornar os detalhes de uma encomenda.
+ * Contém informações do pedido e a lista de ocorrências associadas.
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
