@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Encomenda - TMS</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; line-height: 1.6; }
+        .box { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        nav { margin-bottom: 20px; background-color: #f4f4f4; padding: 10px; border-radius: 5px; }
+        nav a { margin-right: 15px; text-decoration: none; font-weight: bold; color: #333; }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        form { display: grid; gap: 10px; }
+        input, button { padding: 8px; font-size: 1rem; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>Sistema de Rastreamento TMS</h1>
+
+<nav>
+    <a href="/consulta">Consultar Status</a>
+    <a href="/cadastro">Registrar Ocorrência</a>
+    <a href="/nova-encomenda">Cadastrar Encomenda</a>
+</nav>
+
+<div class="box">
+    <h2>Cadastrar Nova Encomenda</h2>
+
+    <form th:action="@{/nova-encomenda}" th:object="${orderDTO}" method="POST">
+
+        <label for="trackingCode">Código de Rastreio:</label>
+        <input type="text" id="trackingCode" th:field="*{trackingCode}" required>
+
+        <label for="customerName">Nome do Cliente:</label>
+        <input type="text" id="customerName" th:field="*{customerName}" required>
+
+        <label for="deliveryAddress">Endereço de Entrega:</label>
+        <input type="text" id="deliveryAddress" th:field="*{deliveryAddress}" required>
+
+        <button type="submit">Salvar Encomenda</button>
+
+        <p th:if="${sucesso}" class="success" th:text="${sucesso}"></p>
+        <p th:if="${erro}" class="error" th:text="${erro}"></p>
+    </form>
+</div>
+
+</body>
+</html>
