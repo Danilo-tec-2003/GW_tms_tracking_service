@@ -20,18 +20,14 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Optional;
 
+/**
+ * Serviço responsável pelo gerenciamento de encomendas e ocorrências.
+ * Contém lógica de negócio, validações de status e manipulação de dados.
+ */
+
 @Service
 public class TrackingService {
 
-    /**
-     * Optei por utilizar a injeção de dependências via construtor,
-     * seguindo a convenção de boas práticas do Spring.
-     *
-     * @param orderRepository O repositório para acesso aos dados da Encomenda.
-     * @param occurrenceRepository O repositório para acesso aos dados da Ocorrência.
-     * @param orderMapper O mapper para converter (mapear) entidades e DTOs de Order.
-     * @param occurrenceMapper O mapper para converter (mapear) entidades e DTOs de Occurrence.
-     */
 
     private final OrderRepository orderRepository;
     private final OccurrenceRepository occurrenceRepository;
@@ -48,20 +44,12 @@ public class TrackingService {
     /**
      * Registra uma nova ocorrência (evento de rastreio) para uma encomenda.
      *
-     * Etapas:
-     * 1. Localiza a encomenda pelo código de rastreio.
-     * 2. Identifica a ocorrência mais recente (último status).
-     * 3. Aplica as regras de negócio (validações de impedimento).
-     * 4. Cria e salva a nova ocorrência.
-     * 5. Retorna o DTO da ocorrência criada.
-
-     * @param trackingCode O código de rastreio...
-     * @param dto O DTO de entrada...
-     * @return O DTO da ocorrência criada.
-     * @throws ResourceNotFoundException se nenhuma encomenda for encontrada.
+     * @param trackingCode Código de rastreio da encomenda.
+     * @param dto DTO com o novo status da ocorrência.
+     * @return DTO da ocorrência criada.
+     * @throws ResourceNotFoundException se a encomenda não existir.
      * @throws BusinessRuleException se uma regra de negócio for violada.
      */
-
     @Transactional
     public OccurrenceDTO registerNewOccurrence(String trackingCode, OccurrenceCreateDTO dto) {
         Order order = findOrderByTrackingCode(trackingCode);
@@ -73,24 +61,25 @@ public class TrackingService {
         return occurrenceMapper.toDTO(saved);
     }
 
+
     /**
      * Busca uma encomenda pelo código de rastreio.
-     * Lança exceção se não for encontrada.
      */
     private Order findOrderByTrackingCode(String trackingCode) {
         return orderRepository.findByTrackingCode(trackingCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Encomenda não encontrada."));
     }
 
+
     /**
-     * Retorna a última ocorrência registrada para a encomenda,
-     * com base no timestamp mais recente.
+     * Retorna a última ocorrência registrada para a encomenda
      */
     private Optional<Occurrence> findLatestOccurrence(Order order) {
         return order.getOccurrences()
                 .stream()
                 .max(Comparator.comparing(Occurrence::getOccurrenceTimestamp));
     }
+
 
     /**
      * Aplica as regras de negócio que controlam o fluxo de status:
@@ -105,12 +94,10 @@ public class TrackingService {
         TrackingStatus latestStatus = latestOccurrenceOpt.get().getStatus();
         TrackingStatus newStatus = dto.getStatus();
 
-        // Regra 1: Não pode adicionar nada após "ENTREGUE"
         if (latestStatus == TrackingStatus.ENTREGUE) {
             throw new BusinessRuleException("A encomenda já foi marcada como 'ENTREGUE'.");
         }
 
-        // Regra 2: Após "NÃO ENTREGUE", somente "SAÍDA PARA ENTREGA" é permitido
         if (latestStatus == TrackingStatus.NAO_ENTREGUE
                 && newStatus != TrackingStatus.SAIDA_PARA_ENTREGA) {
             throw new BusinessRuleException("Após 'NÃO ENTREGUE', o único status permitido é 'SAÍDA PARA ENTREGA'.");
@@ -129,19 +116,16 @@ public class TrackingService {
     }
 
     /**
-     * Consulta o status atual e a timeline completa de uma encomenda
-     * usando seu código de rastreio.
+     * Consulta o status atual e a timeline completa de uma encomenda.
      *
-     * @param trackingCode O código de rastreio (chave de negócio) da encomenda.
-     * @return Um DTO (OrderDetailsDTO) contendo os dados da encomenda e a
-     * lista completa de suas ocorrências, ordenada por data.
-     * @throws ResourceNotFoundException se nenhuma encomenda for encontrada.
+     * @param trackingCode Código de rastreio da encomenda.
+     * @return DTO com detalhes da encomenda e lista de ocorrências ordenada.
+     * @throws ResourceNotFoundException se a encomenda não existir.
      */
     public OrderDetailsDTO getTrackingDetails(String trackingCode) {
 
         Order order = findOrderByTrackingCode(trackingCode);
         OrderDetailsDTO dto = orderMapper.toDetailsDTO(order);
-        //Garantindo a ordenação da timeline, pegando a lista de DTOS de ocorrências e ordenamos usando o occurrenceTimestamp' de cada um.
         dto.getOccurrences().sort(
                 Comparator.comparing(OccurrenceDTO::getOccurrenceTimestamp).reversed()
         );
@@ -150,11 +134,11 @@ public class TrackingService {
     }
 
     /**
-     * Cria uma nova encomenda, validando se o código de rastreio já existe.
+     * Cria uma nova encomenda.
      *
-     * @param dto O DTO de entrada com os dados da nova encomenda.
-     * @return O DTO da encomenda recém-criada.
-     * @throws BusinessRuleException se o 'trackingCode' já estiver em uso.
+     * @param dto DTO com os dados da nova encomenda.
+     * @return DTO da encomenda criada.
+     * @throws BusinessRuleException se o código de rastreio já existir.
      */
     @Transactional
     public OrderDetailsDTO createOrder(OrderCreateDTO dto) {

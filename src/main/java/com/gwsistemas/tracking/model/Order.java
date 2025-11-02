@@ -6,11 +6,16 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entidade que representa uma encomenda.
+ * Contém código de rastreamento, informações do cliente e lista de ocorrências.
+ */
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "trackingCode") // Equals/hashCode baseados SÓ na chave de negócio
+@EqualsAndHashCode(of = "trackingCode")
 @ToString(exclude = "occurrences")
 @Entity
 @Table(name = "tb_order")

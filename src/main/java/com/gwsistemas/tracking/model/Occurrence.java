@@ -6,6 +6,11 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa uma ocorrência de uma encomenda.
+ * Contém o status, timestamp da ocorrência e referência para a Order correspondente.
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor

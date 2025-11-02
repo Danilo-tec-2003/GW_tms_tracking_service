@@ -23,9 +23,6 @@ public class TrackingController {
     /**
      * Endpoint para Consultar Status Atual e Timeline.
      * Mapeado para: GET /api/orders/{trackingCode}
-     *
-     * @param trackingCode O código pego da URL.
-     * @return Um DTO com os detalhes da encomenda e a lista de ocorrências.
      */
     @GetMapping("/{trackingCode}")
     public ResponseEntity<OrderDetailsDTO> getTrackingDetails(
@@ -38,10 +35,6 @@ public class TrackingController {
     /**
      * Endpoint para Registrar nova Ocorrência.
      * Mapeado para: POST /api/orders/{trackingCode}/events
-     *
-     * @param trackingCode O código da encomenda pego da URL.
-     * @param dto O corpo da requisição (JSON) com o novo status.
-     * @return O DTO da nova ocorrência que foi criada.
      */
     @PostMapping("/{trackingCode}/events")
     public ResponseEntity<OccurrenceDTO> registerNewOccurrence(
@@ -55,9 +48,6 @@ public class TrackingController {
     /**
      * Endpoint para Cadastrar uma nova Encomenda.
      * Mapeado para: POST /api/orders
-     *
-     * @param dto O corpo da requisição (JSON) com os dados da encomenda.
-     * @return Um DTO com os detalhes da encomenda recém-criada.
      */
     @PostMapping
     public ResponseEntity<OrderDetailsDTO> createNewOrder(
