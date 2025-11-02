@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Ocorrência - TMS</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; line-height: 1.6; }
+        .box { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        nav { margin-bottom: 20px; background-color: #f4f4f4; padding: 10px; border-radius: 5px; }
+        nav a { margin-right: 15px; text-decoration: none; font-weight: bold; color: #333; }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        form { display: grid; gap: 10px; }
+        input, select, button { padding: 8px; font-size: 1rem; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>Sistema de Rastreamento TMS</h1>
+
+<nav>
+    <a href="/consulta">Consultar Status</a>
+    <a href="/cadastro">Registrar Ocorrência</a>
+    <a href="/nova-encomenda">Cadastrar Encomenda</a> </nav>
+</nav>
+
+<div class="box">
+    <h2>Registrar Ocorrência</h2>
+
+    <form th:action="@{/cadastro}" method="POST">
+        <label for="trackCodeCad">Código de Rastreio:</label>
+        <input type="text" id="trackCodeCad" name="trackingCode" th:value="${trackingCode}" required>
+
+        <label for="statusCad">Novo Status:</label>
+        <select id="statusCad" name="status" required>
+            <option th:each="s : ${T(com.gwsistemas.tracking.enums.TrackingStatus).values()}"
+                    th:value="${s}"
+                    th:text="${s}">
+            </option>
+        </select>
+
+        <button type="submit">Registrar</button>
+
+        <p th:if="${sucessoCadastro}" class="success" th:text="${sucessoCadastro}"></p>
+        <p th:if="${erroCadastro}" class="error" th:text="${erroCadastro}"></p>
+    </form>
+</div>
+
+</body>
+</html>

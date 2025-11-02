@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Rastreio - TMS</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; line-height: 1.6; }
+        .box { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        nav { margin-bottom: 20px; background-color: #f4f4f4; padding: 10px; border-radius: 5px; }
+        nav a { margin-right: 15px; text-decoration: none; font-weight: bold; color: #333; }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        form { display: grid; gap: 10px; }
+        input, button { padding: 8px; font-size: 1rem; }
+        .error { color: red; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<h1>Sistema de Rastreamento TMS</h1>
+
+<nav>
+    <a href="/consulta">Consultar Status</a>
+    <a href="/cadastro">Registrar Ocorrência</a>
+    <a href="/nova-encomenda">Cadastrar Encomenda</a> </nav>
+</nav>
+
+<div class="box">
+    <h2>Consultar Status</h2>
+
+    <form th:action="@{/consulta}" method="GET">
+        <label for="trackCodeConsulta">Código de Rastreio:</label>
+        <input type="text" id="trackCodeConsulta" name="trackingCode" th:value="${param.trackingCode}" required>
+        <button type="submit">Consultar</button>
+
+        <p th:if="${erroConsulta}" class="error" th:text="${erroConsulta}"></p>
+    </form>
+
+    <div th:if="${timeline}">
+        <hr>
+        <h3>Timeline para: <span th:text="${timeline.trackingCode}"></span></h3>
+        <p><strong>Cliente:</strong> <span th:text="${timeline.customerName}"></span></p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Data/Hora</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="occ : ${timeline.occurrences}">
+                <td th:text="${#temporals.format(occ.occurrenceTimestamp, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td th:text="${occ.status}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
