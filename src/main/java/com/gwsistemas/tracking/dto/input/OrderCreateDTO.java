@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderCreateDTO {
 
-    @NotBlank(message = "Codigo de rastreamento nao pode estr em branco.")
+    @NotBlank(message = "Codigo de rastreamento nao pode estar em branco.")
     @Size(min = 10, max = 30, message = "Codigo de rastreamento deve ter entre 10 e 30 caracteres")
     private String trackingCode;
 

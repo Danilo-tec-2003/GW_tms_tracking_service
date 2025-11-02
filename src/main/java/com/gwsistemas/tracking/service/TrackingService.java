@@ -143,7 +143,7 @@ public class TrackingService {
         OrderDetailsDTO dto = orderMapper.toDetailsDTO(order);
         //Garantindo a ordenação da timeline, pegando a lista de DTOS de ocorrências e ordenamos usando o occurrenceTimestamp' de cada um.
         dto.getOccurrences().sort(
-                Comparator.comparing(OccurrenceDTO::getOccurrenceTimestamp)
+                Comparator.comparing(OccurrenceDTO::getOccurrenceTimestamp).reversed()
         );
 
         return dto;
