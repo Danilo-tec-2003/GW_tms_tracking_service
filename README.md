@@ -55,12 +55,13 @@ Esta é a forma mais simples de testar a aplicação finalizada.
 
 ## 💻 Tecnologias Utilizadas (Stack)
 
-* **Backend:** Java 17+ (JDK 23), Spring Boot 3.x
+* **Backend:** Java 17+, Spring Boot 3.x
 * **Acesso a Dados:** Spring Data JPA, Hibernate
 * **Banco de Dados:** MySQL 8+
 * **Frontend:** Thymeleaf (Server-Side Rendering)
 * **Mapeamento/DTOs:** MapStruct
 * **Validação:** Jakarta Bean Validation (para DTOs)
+* **Testes:** JUnit 5, Mockito
 * **Build:** Apache Maven
 
 ## 🎯 Recursos Implementados
@@ -78,6 +79,16 @@ Esta é a forma mais simples de testar a aplicação finalizada.
     * **Impedimento de Conclusão:** O sistema impede o registro de qualquer novo evento se o status mais recente for `ENTREGUE`.
     * **Lógica de Reentrega:** Se o status mais recente for `NÃO ENTREGUE`, o próximo status só pode ser `SAÍDA PARA ENTREGA`.
     * **Validação de Duplicidade:** O sistema impede a criação de uma encomenda com um `trackingCode` que já existe.
+
+## 🧪 Testes Unitários (Prova de Robustez)
+
+Para garantir a **Robustez (Critério IV)** e a **Qualidade de Código (Critério III)**, a camada de serviço (`TrackingService`) foi testada unitariamente com JUnit 5 e Mockito.
+
+Os testes estão localizados em `src/test/java` e provam o funcionamento correto de:
+* **`deveLancarExcecao_QuandoStatusJaEstiverEntregue`**: Prova que a regra de bloqueio de `ENTREGUE` funciona.
+* **`deveLancarExcecao_QuandoStatusInvalidoAposNaoEntregue`**: Prova que a regra de `NAO_ENTREGUE` funciona.
+* **`deveRegistrarComSucesso_QuandoRegrasValidas`**: Prova o "caminho feliz" do registro de ocorrência.
+* **`deveLancarExcecao_QuandoEncomendaNaoForEncontrada`**: Prova o tratamento de erro 404.
 
 ## 📖 API REST (Endpoints)
 
