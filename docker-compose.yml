@@ -1,0 +1,42 @@
+# versão do docker-compose
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: tms-db-mysql
+    restart: always
+
+    # Mapeia a porta do seu PC (3307) ou alguma outra, altere se necessario para a porta do container (3306)
+    ports:
+      - "3307:3306"
+
+    # Variáveis de Ambiente (AS CREDENCIAIS DO BANCO)
+    # ATENÇÃO: Devem ser as mesmas do seu application.properties!
+    environment:
+      MYSQL_ROOT_PASSWORD: tms_password # Senha do root (pode ser qualquer coisa)
+      MYSQL_DATABASE: tms_tracking_db   # CRIA O BANCO
+      MYSQL_USER: tms_user              # CRIA O USUÁRIO
+      MYSQL_PASSWORD: tms_password      # DEFINE A SENHA DO USUÁRIO
+
+    volumes:
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    container_name: tms-app-spring
+    build: .
+    restart: on-failure
+
+    # Mapeia a porta do seu PC (8080) para a porta do container (8080)
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tms_tracking_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: tms_user
+      SPRING_DATASOURCE_PASSWORD: tms_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+
+    depends_on:
+      - db
