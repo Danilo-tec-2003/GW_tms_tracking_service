@@ -1,20 +1,18 @@
-# 🚀 Sistema de Rastreamento TMS
+# Sistema de Rastreamento TMS
 
 Este projeto é uma aplicação Web completa (Backend + Frontend) desenvolvida em Java com Spring Boot e Thymeleaf, simulando o módulo de rastreamento (tracking) de um sistema TMS (Transportation Management System).
 
 O sistema permite o cadastro de encomendas, o registro de eventos de rastreio (ocorrências) e a consulta da timeline completa, implementando regras de negócio críticas para validar o workflow dos status.
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
-A forma mais rápida de rodar o projeto é usando o executável `.jar` fornecido.
+1 - rodar o projeto  usando o executável `.jar` fornecido.
 
 ### Pré-requisitos
-* Java 17+ (JDK)
+* Java 17+  (JDK)
 * Servidor MySQL 8+
 
-### Opção 1: Usando o Executável .jar (Recomendado)
-
-Esta é a forma mais simples de testar a aplicação finalizada.
+### Opção 1: Usando o Executável .jar
 
 **1. Banco de Dados:**
 * Garanta que você tenha um servidor MySQL 8+ rodando.
@@ -34,7 +32,26 @@ Esta é a forma mais simples de testar a aplicação finalizada.
 **4. Acessar:**
 * Abra seu navegador e acesse: **`http://localhost:8080/`**
 
-### Opção 2: Pelo Código-Fonte (Desenvolvimento)
+### Opção 2: Usando Docker-Compose
+
+**Pré-requisitos:**
+* Apenas o **Docker Desktop** instalado e a correr.
+
+**1. Executar:**
+* Abra um terminal na raiz do projeto e rode:
+    ```bash
+    docker compose up --build
+    ```
+* (Aguarde 2-5 minutos no primeiro build).
+
+**2. Acessar:**
+* Abra o seu navegador e acesse: **`http://localhost:8080/`**
+
+**3. Para Parar:**
+* No terminal, prima `Ctrl + C` e depois rode `docker compose down`.
+
+  ---
+### Opção 3: Pelo Código-Fonte (Desenvolvimento)
 
 **1. Instalar Dependências:**
 * Clone o repositório.
@@ -53,36 +70,38 @@ Esta é a forma mais simples de testar a aplicação finalizada.
 
 ---
 
-## 💻 Tecnologias Utilizadas (Stack)
+##  Tecnologias Utilizadas (Stack)
 
-* **Backend:** Java 17+, Spring Boot 3.x
+* **Backend:** Java 17+ (Spring Boot 3.x, Spring Web)
 * **Acesso a Dados:** Spring Data JPA, Hibernate
 * **Banco de Dados:** MySQL 8+
 * **Frontend:** Thymeleaf (Server-Side Rendering)
 * **Mapeamento/DTOs:** MapStruct
 * **Validação:** Jakarta Bean Validation (para DTOs)
 * **Testes:** JUnit 5, Mockito
+* **DevOps/deploy:** Docker (Docker-Compose)
+* **Qualidade de Código:** Lombok
 * **Build:** Apache Maven
 
-## 🎯 Recursos Implementados
+## Recursos Implementados
 
 * **Backend (API REST + Lógica de Serviço):**
-    * API REST completa para gerenciamento de Encomendas e Ocorrências.
-    * Tratamento de Exceções customizado (`@ControllerAdvice`) para erros 404 (Não Encontrado) e 400 (Regra de Negócio).
-    * Validação de DTOs de entrada (`@Valid`).
-    * Uso do padrão DTO (Input/Output) e Mappers (MapStruct) para desacoplamento.
+  * API REST completa para gerenciamento de Encomendas e Ocorrências.
+  * Tratamento de Exceções customizado (`@ControllerAdvice`) para erros 404 (Não Encontrado) e 400 (Regra de Negócio).
+  * Validação de DTOs de entrada (`@Valid`).
+  * Uso do padrão DTO (Input/Output) e Mappers (MapStruct) para desacoplamento.
 * **Frontend (Thymeleaf):**
-    * **Tela de Consulta de Status:** Permite ao usuário buscar uma encomenda pelo código e ver sua timeline completa, ordenada do mais recente para o mais antigo.
-    * **Tela de Cadastro de Ocorrência:** Permite o registro de novos eventos de rastreio.
-    * **Tela de Cadastro de Encomenda:** Permite a criação de novas encomendas no sistema.
+  * **Tela de Consulta de Status:** Permite ao usuário buscar uma encomenda pelo código e ver sua timeline completa, ordenada do mais recente para o mais antigo.
+  * **Tela de Cadastro de Ocorrência:** Permite o registro de novos eventos de rastreio.
+  * **Tela de Cadastro de Encomenda:** Permite a criação de novas encomendas no sistema.
 * **Regras de Negócio (Critérios de Avaliação):**
-    * **Impedimento de Conclusão:** O sistema impede o registro de qualquer novo evento se o status mais recente for `ENTREGUE`.
-    * **Lógica de Reentrega:** Se o status mais recente for `NÃO ENTREGUE`, o próximo status só pode ser `SAÍDA PARA ENTREGA`.
-    * **Validação de Duplicidade:** O sistema impede a criação de uma encomenda com um `trackingCode` que já existe.
+  * **Impedimento de Conclusão:** O sistema impede o registro de qualquer novo evento se o status mais recente for `ENTREGUE`.
+  * **Lógica de Reentrega:** Se o status mais recente for `NÃO ENTREGUE`, o próximo status só pode ser `SAÍDA PARA ENTREGA`.
+  * **Validação de Duplicidade:** O sistema impede a criação de uma encomenda com um `trackingCode` que já existe.
 
-## 🧪 Testes Unitários (Prova de Robustez)
+##  Testes Unitários
 
-Para garantir a **Robustez (Critério IV)** e a **Qualidade de Código (Critério III)**, a camada de serviço (`TrackingService`) foi testada unitariamente com JUnit 5 e Mockito.
+Para garantir a Qualidade de Código, a camada de serviço (`TrackingService`) foi testada unitariamente com JUnit 5 e Mockito.
 
 Os testes estão localizados em `src/test/java` e provam o funcionamento correto de:
 * **`deveLancarExcecao_QuandoStatusJaEstiverEntregue`**: Prova que a regra de bloqueio de `ENTREGUE` funciona.
@@ -90,7 +109,7 @@ Os testes estão localizados em `src/test/java` e provam o funcionamento correto
 * **`deveRegistrarComSucesso_QuandoRegrasValidas`**: Prova o "caminho feliz" do registro de ocorrência.
 * **`deveLancarExcecao_QuandoEncomendaNaoForEncontrada`**: Prova o tratamento de erro 404.
 
-## 📖 API REST (Endpoints)
+##  API REST (Endpoints)
 
 O backend também expõe uma API REST pura (usada pelo Postman nos testes iniciais, embora o frontend Thymeleaf acesse o Service diretamente).
 
